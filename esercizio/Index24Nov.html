@@ -1,0 +1,125 @@
+<!doctype html> 
+<html> 
+<head> 
+	<meta charset="utf-8" />  
+	<title>Assistenza telefonica</title> 
+
+</head>
+<body>
+	<form id="formAssistenza">
+		<p>Nome:<input type="text" name="nome" id="nome" size="20"/></p>
+		<p>Cognome:<input type="text" name="cognome" id="cognome" size="20"/></p>
+		<p>Codice Fiscale:<input type="text" name="codiceFiscale" id="codiceFiscale" size="20"/></p>
+		<p>Città:<input type="text" name="citta" id="citta" size="20"/></p>
+		<p>Gestore Telefonico:<input type="text" name="gestoreTel" id="gestoreTel" size="20"/></p>
+		<p>Numero di telefono del dispositivo:<input type="text" name="tel" id="tel" size="20"/></p>
+		<p>Marca dispositivo:
+			<select name="Marca" id="scegliMarca">
+				<option value="" selected disabled>selezionare</option>
+				<option>Apple</option>
+				<option>Samsung</option>
+				<option>Xiaomi</option>
+				<option>Oppo</option>
+				<option>Motorola</option>
+				<option>Google</option>
+				<option>Realme</option>
+				<option>Honor</option>
+				<option>OnePlus</option>
+			</select></p>
+		<p>Modello dispositivo:<input type="text" name="modello" id="modello" size="20"/></p>
+		<p>Breve descrizione del problema:<input type="text" name="problema" id="problema" size="20"/></p>
+		<p>Recapito di contatto (se diverso dal numero del dispositivo in riparazione)<input type="text" name="recapito" id="recapito" size="20"/></p>
+		<p>  <input type="button" value="Genera ricevuta" onclick="generaRicevuta()"></p>
+	</form>
+	<div id="ricevuta" style="display: none;">
+
+	    <h2>Ri-Generation - Via Dante Alighieri 47, Milano</h2>
+
+	    <h3>Ricevuta di consegna</h3>
+
+	    <table border="1">
+
+	        <tr>
+	            <td>Nome</td>
+	            <td id="valNome"></td>
+	        </tr>
+	        <tr>
+	            <td>Cognome</td>
+	            <td id="valCognome"></td>
+	        </tr>
+			<tr>
+				<td>Codice Fiscale</td>
+				<td id="valCodiceFiscale"></td>
+			</tr>
+			<tr>
+				<td>Città</td>
+				<td id="valCitta"></td>
+			</tr>
+			<tr>
+				<td>Gestore telefonico</td>
+				<td id="valGestore"></td>
+			</tr>
+			<tr>
+				<td>Numero di Telefono del dispositivo</td>
+				<td id="valNumero"></td>
+			</tr>
+			<tr>
+				<td>Marca dispositivo</td>
+				<td id="valMarca"></td>
+			</tr>
+			<tr>
+				<td>Modello dispositivo</td>
+				<td id="valModello"></td>
+			</tr>
+			<tr>
+				<td>breve descrizione del problema</td>
+				<td id="valProblema"></td>
+			</tr>
+			<tr>
+				<td>Recapito di contatto</td>
+				<td id="valRecapito"></td>
+			</tr>
+	    </table>
+		<p>
+		    <input type="button" value="Torna al form" onclick="tornaAlForm()">
+		</p>
+	</div>
+	<script>
+		function generaRicevuta(){
+			let nome = document.getElementById("nome").value;
+			let cognome = document.getElementById("cognome").value;
+			let codiceFiscale = document.getElementById("codiceFiscale").value;
+			let citta = document.getElementById("citta").value;
+			let gestore = document.getElementById("gestoreTel").value;
+			let numero = document.getElementById("tel").value;
+			let marca = document.getElementById("scegliMarca").value;
+			let modello = document.getElementById("modello").value;
+			let problema = document.getElementById("problema").value;
+			let recapito = document.getElementById("recapito").value;
+			if (recapito == ""){
+				recapito=numero;
+			}
+			document.getElementById("valNome").innerHTML = nome;
+			document.getElementById("valCognome").innerHTML = cognome;
+			document.getElementById("valCodiceFiscale").innerHTML = codiceFiscale;
+			document.getElementById("valCitta").innerHTML=citta
+			document.getElementById("valGestore").innerHTML = gestore;
+			document.getElementById("valNumero").innerHTML = numero;
+			document.getElementById("valMarca").innerHTML = marca;
+			document.getElementById("valModello").innerHTML = modello;
+			document.getElementById("valProblema").innerHTML = problema;
+			document.getElementById("valRecapito").innerHTML = recapito;
+			
+			document.getElementById("formAssistenza").style.display = "none";
+
+			document.getElementById("ricevuta").style.display = "block";
+			
+		}
+		function tornaAlForm(){
+			document.getElementById("formAssistenza").style.display = "block";
+			document.getElementById("ricevuta").style.display = "none";
+			document.getElementById("formAssistenza").reset();
+		}
+	</script>
+</body>
+</html> <!-- fine codice html -->
