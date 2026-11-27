@@ -3,15 +3,75 @@
 <head> 
 	<meta charset="utf-8" />  
 	<title>Assistenza telefonica</title> 
+	<style>
+		#fattura{
+			border-collapse: separate; 
+				border-spacing: 0; 
+				border-radius: 10px; 
+				overflow: hidden; 
+				border: 1px solid #ccc;
+
+				width: 900px;
+
+				text-align: center;
+
+				margin-left: auto;
+				margin-right: auto;
+
+				font-family: Courier;
+				font-size: 20px;
+				background-color: #4b5f73;
+				border: 2px solid #3c4142;
+
+			}
+
+			th {
+
+				
+
+				background-color: grey;
+				border-bottom: 2px solid black;
+				border-right: 2px solid black;
+				border-top: 2px solid lightgrey;
+				border-left: 2px solid lightgrey;
+				color: white;
+				margin: 10px;
+				padding: 10px;
+
+			}
+
+			td {
+
+				
+
+				font-family: Arial;
+				
+				background-color: gray;
+				color: white;
+
+				border-bottom: 2px solid black;
+				border-right: 2px solid black;
+				border-top: 2px solid lightgray;
+				border-left: 2px solid lightgray;
+				margin: 10px;
+				padding: 10px;
+
+			}
+	</style>
 
 </head>
 <body>
-	<form id="formAssistenza">
+	<form id="formAssistenza" name="modulo">
 		<p>Nome:<input type="text" name="nome" id="nome" size="20"/></p>
 		<p>Cognome:<input type="text" name="cognome" id="cognome" size="20"/></p>
-		<p>Codice Fiscale:<input type="text" name="codiceFiscale" id="codiceFiscale" size="20"/></p>
+		<p>Codice Fiscale:<input type="text" name="codiceFiscale" id="codiceFiscale" size="20" maxlength="16"/></p>
 		<p>Città:<input type="text" name="citta" id="citta" size="20"/></p>
-		<p>Gestore Telefonico:<input type="text" name="gestoreTel" id="gestoreTel" size="20"/></p>
+		<!--<p>Gestore Telefonico:<input type="text" name="gestoreTel" id="gestoreTel" size="20"/></p>-->
+		<p>Gestore telefonico</p>
+		<input type="radio" name="operatore" value="tim" id="tim" /> TIM<br />
+		<input type="radio" name="operatore" value="vodafone" id="vodafone" /> VODAFONE<br />
+		<input type="radio" name="operatore" value="windtre" id="windtre" /> WIND-TRE<br />
+		<input type="radio" name="operatore" value="altro" id="altro" /> Altro <input type="text" name="altroOperatore" disabled /><br />
 		<p>Numero di telefono del dispositivo:<input type="text" name="tel" id="tel" size="20"/></p>
 		<p>Marca dispositivo:
 			<select name="Marca" id="scegliMarca">
@@ -20,10 +80,6 @@
 				<option>Samsung</option>
 				<option>Xiaomi</option>
 				<option>Oppo</option>
-				<option>Motorola</option>
-				<option>Google</option>
-				<option>Realme</option>
-				<option>Honor</option>
 				<option>OnePlus</option>
 			</select></p>
 		<p>Modello dispositivo:<input type="text" name="modello" id="modello" size="20"/></p>
@@ -33,11 +89,14 @@
 	</form>
 	<div id="ricevuta" style="display: none;">
 
-	    <h2>Ri-Generation - Via Dante Alighieri 47, Milano</h2>
-
-	    <h3>Ricevuta di consegna</h3>
-
-	    <table border="1">
+	    <table id="fattura" border="1">
+			<tr>
+				<tr>
+				<th colspan="2">
+				    <h2>Ri-Generation - Via Dante Alighieri 47, Milano</h2>
+				    <h3>Ricevuta di consegna</h3>
+				</th>
+			</tr>
 
 	        <tr>
 	            <td>Nome</td>
@@ -85,12 +144,50 @@
 		</p>
 	</div>
 	<script>
+		//variabili di servizio per il programma
+		let operat=false;//questa variabile diventra true se seleziono un gestore telefonico (all'inizio nessun gestore selezionato)
+		let recupero="";//quì salvo  l'altro gestore se l'utente è indeciso
+		let val; //quì salvo la scelta del radiobutton
+
+		//costanti associate ai radiobutton
+		const tim= document.getElementById("tim");//rigo27
+		const vodafone= document.getElementById("vodafone");//rigo28
+		const windtre= document.getElementById("windtre");//rigo29
+		const altro= document.getElementById("altro");//rigo30
+
+		//implemento la funzione dei radiobutton
+		[tim, vodafone, windtre, altro].forEach(function(gestore){
+			gestore.addEventListener("click", scelta);//associo a tutti i radio button l'evento("click") che innesca scelta()
+			
+			function scelta(){// se entra in funzione scelta()allora + stato cliccato un radiobutton
+				operat = true;
+			
+				//scelta parte con qualsiasi radiobutton ma devo risalire a quale è stato premuto
+				for(let i = 0; i < document.modulo.operatore.length; i++){ // vero e proprio ciclo di scansione della famiglia radiobutton name="operatore" gestico radiobutton come un'array (in realtà i radiobutton sono memorizzati proprio come array)
+				if (document.modulo.operatore[i].checked==true){//solo il rbutton cliccato sarà checked
+					val= document.modulo.operatore[i].value;//a questo punto scelta() sa cosa è stato selezionato
+					
+					if(val=="altro"){// verifico se è stato scelto "altro" per attivare la casella di testo
+						document.modulo.altroOperatore.disabled=false;//imput text attivato
+						document.modulo.altroOperatore.value = recupero; //riscrivo l'ultimo gestore immesso se esiste
+						document.modulo.altroOperatore.focus(); // sposto il cursore nella casella di testo
+					} else{ //se è stato selezionaro un gestore tra windtre,vodafone, tim
+						recupero=document.modulo.altroOperatore.value; // salvo il gestore eventualmente immesso dall'utente
+						document.modulo.altroOperatore.value=""; //svuoto la casella di testo
+						document.modulo.altroOperatore.disabled=true;//input-text disattivato
+					}
+				}
+				}
+			}
+		});
+	
+	
 		function generaRicevuta(){
 			let nome = document.getElementById("nome").value;
 			let cognome = document.getElementById("cognome").value;
 			let codiceFiscale = document.getElementById("codiceFiscale").value;
 			let citta = document.getElementById("citta").value;
-			let gestore = document.getElementById("gestoreTel").value;
+			//let gestore = document.getElementById("gestoreTel").value;
 			let numero = document.getElementById("tel").value;
 			let marca = document.getElementById("scegliMarca").value;
 			let modello = document.getElementById("modello").value;
@@ -99,6 +196,26 @@
 			if (recapito == ""){
 				recapito=numero;
 			}
+			let gestore = "";
+
+			for(let i = 0; i < document.modulo.operatore.length; i++){
+
+			    if(document.modulo.operatore[i].checked == true){
+
+			        if(document.modulo.operatore[i].value == "altro"){
+
+			            gestore = document.modulo.altroOperatore.value;
+
+			        } else {
+
+			            gestore = document.modulo.operatore[i].value;
+
+			        }
+
+			    }
+
+			}
+			
 			document.getElementById("valNome").innerHTML = nome;
 			document.getElementById("valCognome").innerHTML = cognome;
 			document.getElementById("valCodiceFiscale").innerHTML = codiceFiscale;
@@ -119,6 +236,11 @@
 			document.getElementById("formAssistenza").style.display = "block";
 			document.getElementById("ricevuta").style.display = "none";
 			document.getElementById("formAssistenza").reset();
+			
+			document.modulo.altroOperatore.disabled = true;
+			document.modulo.altroOperatore.value = "";
+			recupero = "";
+			operat = false;
 		}
 	</script>
 </body>
